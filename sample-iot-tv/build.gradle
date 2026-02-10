@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 34
+    defaultConfig {
+        applicationId "com.tuya.smartai.sample"
+        minSdkVersion 23
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+
+        packagingOptions {
+            pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+            pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../keystore/chiptripLauncher.jks")
+            keyAlias "chiptripLauncher"
+            keyPassword "123456"
+            storePassword "123456"
+            // 启用 V1、V2 签名，兼容所有设备
+            // V1 签名：兼容 Android 7.0 以下
+            // V2 签名：Android 7.0+ 支持，提供更好的安全性和性能
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        release {
+            storeFile file("../keystore/chiptripLauncher.jks")
+            keyAlias "chiptripLauncher"
+            keyPassword "123456"
+            storePassword "123456"
+            // 启用 V1、V2 签名，兼容所有设备
+            // V1 签名：兼容 Android 7.0 以下
+            // V2 签名：Android 7.0+ 支持，提供更好的安全性和性能
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+    
+    // 禁用 lint 检查（TV 应用特殊配置）
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.core:core:1.6.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.alibaba:fastjson:1.1.67.android'
+    // 使用兼容 Android 4.3 的 zxing 版本（3.3.0 支持 API 18+）
+    implementation 'com.google.zxing:core:3.3.0'
+
+//    if (rootProject.ext.useLocalSource) {
+        // 本地源码
+        // implementation project(':thingiotsdk')
+//    } else {
+//        // 远程依赖
+       implementation "com.thingclips.smart:thingiotsdk:2.1.7.0"
+//    }
+}

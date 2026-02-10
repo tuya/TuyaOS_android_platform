@@ -1,0 +1,5 @@
+include ':sample-ai-frame'
+include ':sample-iot-tv'
+
+rootProject.name='tuyaopen_android_platform'
+

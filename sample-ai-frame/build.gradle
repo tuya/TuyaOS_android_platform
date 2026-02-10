@@ -1,0 +1,107 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+android {
+    compileSdkVersion 31
+    defaultConfig {
+        applicationId "com.tuya.TuyaSmart_AI_IoT"
+        minSdkVersion 23
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a'
+//            abiFilters 'arm64-v8a'
+        }
+
+        packagingOptions {
+            pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+            pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        }
+    }
+    signingConfigs {
+//        debug {
+//            storeFile file('../keystore/platform.jks')
+//            storePassword "${SIGN_STORE_PASSWORD}"
+//            keyAlias "${SIGN_KEY_ALIAS}"
+//            keyPassword "${SIGN_KEY_PASSWORD}"
+//            v2SigningEnabled true
+//        }
+        debug {
+            storeFile file("../keystore/chiptripLauncher.jks")
+            keyAlias "chiptripLauncher"
+            keyPassword "123456"
+            storePassword "123456"
+        }
+        release {
+            storeFile file('../keystore/platform.jks')
+            storePassword "${SIGN_STORE_PASSWORD}"
+            keyAlias "${SIGN_KEY_ALIAS}"
+            keyPassword "${SIGN_KEY_PASSWORD}"
+            v2SigningEnabled true
+        }
+
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.core:core:1.6.0'
+    implementation "androidx.drawerlayout:drawerlayout:1.0.0"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.annotation:annotation:1.3.0'
+    implementation 'com.alibaba:fastjson:1.1.67.android'
+
+    // ==================== thingiotsdk（必选）====================
+    implementation "com.thingclips.smart:thingiotsdk:2.1.7.0"
+    implementation 'com.alibaba:fastjson:1.1.67.android'
+    // ==================== thingiotsdk-aistream（可选）====================
+    // 如需 AI 语音/视频流能力，添加以下依赖：
+    implementation "com.thingclips.smart:thingiotsdk-aistream:2.1.7.0"
+    // ==================== thingiotsdk-frame（可选）====================
+    // 如需相框业务能力，添加以下依赖：
+    implementation "com.thingclips.smart:thingiotsdk-frame:2.1.7.0"
+    implementation 'com.qcloud.cos:cos-android:5.9.46' //中国区引用-腾讯云
+    implementation 'com.amazonaws:aws-android-sdk-core:2.22.1' //海外引用
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.22.1'//海外引用-亚马逊云
+    implementation 'com.microsoft.azure.android:azure-storage-android:2.0.0'//海外引用-微软云
+    // ==================== thingiotsdk-licenseprovision（可选）====================
+    // 如需授权烧录能力，添加以下依赖：
+    implementation 'androidx.security:security-crypto:1.0.0'//授权码存储用到的加密库
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+    implementation "com.thingclips.smart:thingiotsdk-licenseprovision:2.1.7.0"
+    implementation('com.github.SUPERCILEX.poi-android:poi:3.17') {
+        exclude group: 'stax', module: 'stax-api'
+        exclude group: 'com.bea.xml', module: 'jsr173-ri'
+        exclude group: 'org.codehaus.woodstox', module: 'stax2-api'
+    }
+
+
+    //demo 中引用的一些组件，非关键
+    def glide_version = "4.16.0"
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+    implementation "com.github.bumptech.glide:okhttp3-integration:$glide_version"
+    // 添加 OkHttp 集成，更好地处理网络图片
+    implementation 'pub.devrel:easypermissions:2.0.1'
+    implementation 'com.google.zxing:core:3.5.3'
+
+
+}
