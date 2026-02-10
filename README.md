@@ -1,0 +1,1 @@
+# TuyaOS_android_platform
