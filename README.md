@@ -1,50 +1,212 @@
-# Tuya Smart AI IoT SDK
+# TuyaOS Android Platform
 
-涂鸦智能 tuyaos Android Platform 示例项目，提供提供多种 demo。以及源码
+[📖 中文文档](./README_zh.md) | [Documentation](./docs/) | [Samples](./docs/samples/)
 
-## 项目简介
+> Run TuyaOS on Android and explore what's possible with IoT development!
 
-本项目是基于涂鸦 IoT 平台的 Android SDK 示例工程，主要包含以下功能模块：
+## 🎯 What is TuyaOS Android Platform?
 
-- **IoT 设备接入** - 设备激活、配网、DP 数据收发、MQTT 通信
-- **AI 能力** - AI 对话、AI 流式交互等智能功能
-- **相框功能** - 图片/视频上传、下载、展示及管理
-- **产测系统** - 设备授权烧录、产测流程支持
+**TuyaOS Android Platform** is a comprehensive, production-ready environment for deploying TuyaOS on Android devices. It provides:
 
-## 模块结构
+- **Production-Ready SDK & Frameworks** for IoT device integration on Android
+- **Rich Sample Applications** demonstrating real-world use cases
+- **Complete Documentation** for quick integration and customization
+- **Modular Architecture** for flexible extension and scalability
+
+### Key Capabilities
+
+| Feature | Description |
+|---------|-------------|
+| 🔗 **Device Connectivity** | Seamlessly connect, control, and manage IoT devices via TuyaOS |
+| ☁️ **Cloud Integration** | Sync device state and data with Tuya Cloud ecosystem |
+| 🤖 **AI-Powered Features** | Leverage intelligent interactions and automation capabilities |
+| 📱 **Android Native** | Built for Android with native APIs and best practices |
+| 🎨 **UI Components** | Pre-built UI modules for common IoT operations |
+| 🔐 **Security First** | Enterprise-grade encryption and authentication |
+
+---
+
+## 🚀 Quick Start
+
+### Get Started in 3 Steps:
+
+1. **[Read the Integration Guide](./docs/integration.md)** - Set up your development environment and credentials
+2. **[Explore Sample Projects](./docs/samples/)** - Learn through hands-on examples
+3. **[Build Your App](./docs/integration.md#building-your-app)** - Integrate into your own project
+
+### Installation
+
+```bash
+# Clone this repository
+git clone https://github.com/tuya/TuyaOS_android_platform.git
+cd TuyaOS_android_platform
+
+# Open with Android Studio
+# Configure your Tuya Cloud credentials (UUID & AuthKey)
+# Build and run
+```
+
+---
+
+## 📚 Sample Projects
+
+Discover what you can build with TuyaOS on Android!  
+Each sample is fully functional with source code, documentation, and will include visual demos (screenshots/videos).
+
+### 🏠 Smart Home & Lighting
+
+| Sample | What You'll Learn | Status |
+|--------|------------------|--------|
+| [Smart Light Control](./docs/samples/smart-light/) | Control RGB lights, brightness, scenes | ✅ Ready |
+| [Multi-Device Coordination](./docs/samples/multi-device/) | Coordinate multiple devices (lights, plugs, switches) | ✅ Ready |
+| [Home Automation Scenes](./docs/samples/scenes/) | Create and manage automation scenarios | 📋 Documentation |
+
+### 📸 Media & Display
+
+| Sample | What You'll Learn | Status |
+|--------|------------------|--------|
+| [Smart Photo Frame](./docs/samples/photo-frame/) | Upload, manage, and display images/videos | ✅ Ready |
+| [Digital Signage](./docs/samples/digital-signage/) | Display content on connected screens | 📋 Documentation |
+
+### 🔧 IoT Connectivity
+
+| Sample | What You'll Learn | Status |
+|--------|------------------|--------|
+| [Device Pairing & Network Config](./docs/samples/device-pairing/) | Activate devices and setup Wi-Fi | ✅ Ready |
+| [Real-time Data Sync](./docs/samples/data-sync/) | Handle DP data and MQTT communication | ✅ Ready |
+| [Cloud State Management](./docs/samples/cloud-sync/) | Keep device state synchronized with cloud | ✅ Ready |
+
+### 🤖 AI & Intelligence
+
+| Sample | What You'll Learn | Status |
+|--------|------------------|--------|
+| [Voice Assistant Integration](./docs/samples/voice-ai/) | Voice commands and AI dialogue | 📋 Documentation |
+| [Smart Recommendations](./docs/samples/ai-recommendations/) | ML-powered suggestions | 📋 Documentation |
+
+### 🏭 Manufacturing & Testing
+
+| Sample | What You'll Learn | Status |
+|--------|------------------|--------|
+| [Production Testing System](./docs/samples/prod-test/) | Device authorization and production testing workflow | ✅ Ready |
+
+---
+
+## 📖 Documentation
+
+- **[Integration Guide](./docs/integration.md)** - Step-by-step setup and configuration
+- **[Architecture Overview](./docs/architecture.md)** - System design and module descriptions
+- **[API Reference](./docs/api-reference.md)** - Complete SDK API documentation
+- **[Troubleshooting](./docs/troubleshooting.md)** - Common issues and solutions
+- **[FAQ](./docs/faq.md)** - Frequently asked questions
+
+### Language Support
+
+- 🇬🇧 **English (Main)** - All documentation
+- 🇨🇳 **中文** - [Complete Chinese Documentation](./README_zh.md)
+
+---
+
+## 📦 Repository Structure
 
 ```
-├── app/                          # 示例应用
-├── thingiotsdk/                  # IoT 基础 SDK
-├── thingiotsdk-aistream/         # AI 流式交互模块
-├── thingiotsdk-frame/            # 相框功能模块
-├── thingiotsdk-licenseprovision/ # 授权烧录模块
-└── thingiotsdk-package/          # 打包模块
+tuya/TuyaOS_android_platform/
+├── README.md                          # You are here
+├── README_zh.md                       # Chinese version
+├── docs/
+│   ├── integration.md                 # How to integrate
+│   ├── architecture.md                # System architecture
+│   ├── api-reference.md               # SDK APIs
+│   └── samples/                       # Sample documentation
+│       ├── smart-light/
+│       ├── multi-device/
+│       ├── photo-frame/
+│       └── ...
+├── app/                               # Main demo application
+├── thingiotsdk/                       # Core IoT SDK
+├── thingiotsdk-aistream/              # AI streaming module
+├── thingiotsdk-frame/                 # Photo frame module
+├── thingiotsdk-licenseprovision/      # Device authorization
+├── thingiotsdk-package/               # Packaging module
+├── assets/                            # Images, videos, resources
+└── gradle/                            # Build configuration
 ```
 
-## 快速开始
+---
 
-1. 克隆项目到本地
-2. 使用 Android Studio 打开项目
-3. 配置授权码（UUID 和 AuthKey）
-4. 编译运行到目标设备
+## 🔌 Supported Features
 
-## 文档索引
+### Device Management
+- ✅ Device activation and pairing
+- ✅ Multi-protocol support (Wi-Fi, Bluetooth, Zigbee)
+- ✅ OTA updates
+- ✅ Device grouping and organization
 
-详细使用说明请参阅以下文档：
+### Data & Control
+- ✅ Real-time DP (Data Point) data exchange
+- ✅ MQTT messaging for reliability
+- ✅ Batch operations and commands
+- ✅ Historical data logging
 
-| 文档 | 说明 |
-|------|------|
-| [SDK 集成指南](doc/SDK集成指南.md) | SDK 接入与集成说明 |
-| [基础 IoT 文档](doc/SDK使用文档%201-基础IoT文档.md) | 设备激活、DP 收发、MQTT 通信等基础功能 |
-| [AI 使用文档](doc/SDK使用文档%202-AI使用文档.MD) | AI 对话、AI 流式交互等功能说明 |
-| [AI Session 连接建立指南](doc/SDK使用文档%205-AI%20Session连接建立指南.md) | AI Session 建立连接的详细流程 |
-| [相框文档](doc/SDK使用文档%203-相框文档.md) | 相框图片/视频管理功能 |
-| [产测文档](doc/SDK使用文档%204-产测文档.md) | 产测流程与接口说明 |
-| [产测系统使用指南](doc/产测系统使用指南.md) | 产测系统操作指南 |
+### Cloud Integration
+- ✅ Tuya Cloud API integration
+- ✅ Real-time cloud synchronization
+- ✅ Device sharing and family management
+- ✅ Automation and scene creation
 
+### UI & UX
+- ✅ Pre-built control panels
+- ✅ Customizable device interfaces
+- ✅ Dark mode and theme support
+- ✅ Responsive design for all screen sizes
 
+### Security
+- ✅ End-to-end encryption
+- ✅ OAuth authentication
+- ✅ Permission management
+- ✅ Secure credential storage
 
-## 许可证
+---
 
-Copyright © Tuya Inc.
+## 🤝 Contributing
+
+We welcome contributions! Whether you're adding new samples, improving documentation, or fixing bugs:
+
+1. **Fork** this repository
+2. **Create** a feature branch (`git checkout -b feature/my-sample`)
+3. **Commit** your changes (`git commit -m 'Add smart light sample'`)
+4. **Push** to the branch (`git push origin feature/my-sample`)
+5. **Open** a Pull Request
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📝 License
+
+This project is licensed under the [Apache License 2.0](./LICENSE).
+
+```
+Copyright © Tuya Inc. All rights reserved.
+```
+
+---
+
+## 🔗 Resources
+
+- **[Tuya Developer Platform](https://developer.tuya.com)** - Official developer hub
+- **[API Documentation](https://developer.tuya.com/en/docs)** - Complete API reference
+- **[IoT Development Kit](https://developer.tuya.com/en/docs/iot)** - IoT solutions
+- **[Community Forum](https://community.tuya.com)** - Connect with other developers
+
+---
+
+## ❓ Need Help?
+
+- 📧 **Email**: support@tuya.com
+- 💬 **Community**: [Tuya Community](https://community.tuya.com)
+- 🐛 **Report Issues**: [GitHub Issues](https://github.com/tuya/TuyaOS_android_platform/issues)
+- 📖 **Check FAQ**: [Frequently Asked Questions](./docs/faq.md)
+
+---
+
+**Happy coding! 🎉**
