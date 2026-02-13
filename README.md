@@ -1,50 +1,104 @@
-# Tuya Smart AI IoT SDK
+# TuyaOS Android Platform
 
-涂鸦智能 tuyaos Android Platform 示例项目，提供提供多种 demo。以及源码
+![](./doc/img/tuya_logo.png)
 
-## 项目简介
+---
 
-本项目是基于涂鸦 IoT 平台的 Android SDK 示例工程，主要包含以下功能模块：
+**English** | [📖 中文文档](./README_zh.md)
 
-- **IoT 设备接入** - 设备激活、配网、DP 数据收发、MQTT 通信
-- **AI 能力** - AI 对话、AI 流式交互等智能功能
-- **相框功能** - 图片/视频上传、下载、展示及管理
-- **产测系统** - 设备授权烧录、产测流程支持
 
-## 模块结构
+## 🎯 Project Introduction
+
+TuyaOS is a distributed cross-platform operating system designed for IoT applications, built on kernels such as RTOS, Linux, and Non-OS, targeting full connectivity and all scenarios. [More about TuyaOS](https://github.com/tuya/tuyaos-iot-wifi-ble-bk7231n)
+
+**TuyaOS Android Platform** is the Android platform implementation of TuyaOS. It enables developers to rapidly develop AI products on Android systems, including basic OS features such as device pairing, control, device management, and AI capabilities. Developers can quickly implement TuyaOS devices and AI products on Android systems.
+
+This project contains multiple samples based on TuyaOS implementations on the Android platform.
+
+---
+
+## 📐 Architecture Overview
+
+![](./doc/img/art.png)
+
+---
+
+## 📦 Repository Structure
 
 ```
-├── app/                          # 示例应用
-├── thingiotsdk/                  # IoT 基础 SDK
-├── thingiotsdk-aistream/         # AI 流式交互模块
-├── thingiotsdk-frame/            # 相框功能模块
-├── thingiotsdk-licenseprovision/ # 授权烧录模块
-└── thingiotsdk-package/          # 打包模块
+TuyaOS_android_platform/
+├── README.md                        # English documentation (this file)
+├── README_zh.md                     # Chinese documentation
+├── doc/                             # Detailed development documentation
+│   ├── SDK使用文档 1-基础IoT文档.md    # Base IoT documentation
+│   ├── SDK使用文档 2-AI使用文档.MD     # AI capabilities documentation
+│   ├── SDK使用文档 3-相框文档.md       # Smart photo frame documentation
+│   ├── SDK使用文档 4-产测文档.md       # Production testing documentation
+│   ├── 产测系统使用指南.md             # Production testing operation guide
+│   └── img/                         # Documentation images
+├── sample-ai-frame/                 # Sample: AI Smart Photo Frame
+├── sample-iot-tv/                   # Sample: IoT TV Control
+├── build.gradle                     # Top-level build configuration
+├── settings.gradle                  # Module configuration
+└── gradle/                          # Gradle wrapper
 ```
 
-## 快速开始
 
-1. 克隆项目到本地
-2. 使用 Android Studio 打开项目
-3. 配置授权码（UUID 和 AuthKey）
-4. 编译运行到目标设备
+---
 
-## 文档索引
+## 📖 Documentation
 
-详细使用说明请参阅以下文档：
+| Document | Description |
+|----------|-------------|
+| [Base IoT Guide](./doc/SDK使用文档%201-基础IoT文档.md) | SDK initialization, pairing, DP points, device control, API calls |
+| [AI Guide](./doc/SDK使用文档%202-AI使用文档.MD) | AI Stream connection, session management, multimodal data transmission, audio recording/playback |
+| [Photo Frame Guide](./doc/SDK使用文档%203-相框文档.md) | Photo frame initialization, photo management, event listening |
+| [Production Testing Guide](./doc/SDK使用文档%204-产测文档.md) | Production testing module integration, license management |
+| [Production Testing Operation Manual](./doc/产测系统使用指南.md) | Operation manual for production testing personnel |
 
-| 文档 | 说明 |
-|------|------|
-| [SDK 集成指南](doc/SDK集成指南.md) | SDK 接入与集成说明 |
-| [基础 IoT 文档](doc/SDK使用文档%201-基础IoT文档.md) | 设备激活、DP 收发、MQTT 通信等基础功能 |
-| [AI 使用文档](doc/SDK使用文档%202-AI使用文档.MD) | AI 对话、AI 流式交互等功能说明 |
-| [AI Session 连接建立指南](doc/SDK使用文档%205-AI%20Session连接建立指南.md) | AI Session 建立连接的详细流程 |
-| [相框文档](doc/SDK使用文档%203-相框文档.md) | 相框图片/视频管理功能 |
-| [产测文档](doc/SDK使用文档%204-产测文档.md) | 产测流程与接口说明 |
-| [产测系统使用指南](doc/产测系统使用指南.md) | 产测系统操作指南 |
+---
+
+## 📚 Sample Projects
+
+### 🖼️ AI Smart Photo Frame (`sample-ai-frame`)
+
+A complete AI-powered smart photo frame sample demonstrating the combined use of multiple TuyaOS capabilities:
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| Device Pairing | BLE / QR Code pairing and activation | ✅ Ready |
+| DP Communication | Data Point reporting and command dispatch | ✅ Ready |
+| AI Chat | Multimodal AI conversation — voice / text / image input | ✅ Ready |
+| Text-to-Image / Image-to-Image | AI-generated images | ✅ Ready |
+| Photo Frame Management | Cloud photo upload, download, and display | ✅ Ready |
+| License Provisioning | SD card license burning | ✅ Ready |
+
+![](./doc/img/frame.jpg)
 
 
 
-## 许可证
+### 📺 IoT TV Control (`sample-iot-tv`)
 
-Copyright © Tuya Inc.
+A smart TV remote control sample built on TuyaOS:
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| Volume Control | Precise volume level control (0-100) | ✅ Fully Supported |
+| Mute Control | Mute / unmute toggle | ✅ Fully Supported |
+| Home Button | Return to TV home screen | ✅ Fully Supported |
+| D-pad Navigation | Up / Down / Left / Right (requires system permission) | ⚠️ System Permission |
+| Menu / OK / Back | Remote key simulation (requires system permission) | ⚠️ System Permission |
+
+![](./doc/img/tv_img.jpg)
+
+---
+
+## 🔗 Resources
+
+- **[Tuya Developer Platform](https://developer.tuya.com)** — Official developer hub
+- **[Community Forum](https://www.tuyaos.com/viewforum.php?f=2)** — Developer community
+- **[TuyaOS Introduction](https://github.com/tuya/tuyaos-iot-wifi-ble-bk7231n)** — TuyaOS BK Platform
+
+---
+
+**Happy coding! 🎉**
