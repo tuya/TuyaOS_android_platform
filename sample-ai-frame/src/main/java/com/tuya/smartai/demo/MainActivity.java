@@ -34,8 +34,6 @@ import com.thingclips.smart.ai.bs.bean.PhotoInfo;
 import com.thingclips.smart.ai.bs.bean.StartEventData;
 import com.thingclips.smart.ai.bs.bean.UploadFinishedEventData;
 import com.thingclips.smart.ai.bs.bean.UploadedEventData;
-import com.thingclips.smart.os.license.LicenseProvisionManager;
-import com.thingclips.smart.os.license.model.LicenseInfo;
 import com.tuya.smartai.demo.ai.AiChatActivity;
 import com.tuya.smartai.demo.utils.LoadingDialog;
 import com.tuya.smartai.demo.utils.QrCodeUtil;
@@ -108,15 +106,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.get_weather).setOnClickListener(this::onClick);
         findViewById(R.id.get_weather_default).setOnClickListener(this::onClick);
 
-        //添加调试代码，添加该代码，可以不用走授权流程
-        LicenseProvisionManager.getInstance()
-                .init(this).grantLicense("uuidb3d877629c43fe71", "XVCWC2tUf1Xcr21h9KpdEkQ8FERGal4G");
-        // 初始化授权模块并检查授权状态
-        initLicenseModule();
+        // //添加调试代码，添加该代码，可以不用走授权流程
+        // LicenseProvisionManager.getInstance()
+        //         .init(this).grantLicense("uuidb3d877629c43fe71", "XVCWC2tUf1Xcr21h9KpdEkQ8FERGal4G");
+        // // 初始化授权模块并检查授权状态
+        // initLicenseModule();
 
+        initSDK();
 
-
-        chooseNewImage("", "", false);
+        // chooseNewImage("", "", false);
     }
 
 
@@ -280,16 +278,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSDK() {
 
-        LicenseInfo info = LicenseProvisionManager.getInstance().getLicense();
-
-
-        TLog.e(TAG, "initSDK license : uuid=" + info.uuid + ", key=" + info.key);
+        // LicenseInfo info = LicenseProvisionManager.getInstance().getLicense();
+        // TLog.e(TAG, "initSDK license : uuid=" + info.uuid + ", key=" + info.key);
 
         IoTParams params = new IoTParams.Builder()
                 .addMode(IoTParams.Mode.MODE_QR) //配网模式，QR为二维码模式
                 .productId("le2fomtcgvicqawl") //  aqcxhpklvzlblyl3 产品ID，设备对应的产品ID,一类产品 一个产品id，产品id中会定义产品的各种功能和属性
-                .uuid(info.uuid) //授权码中的uuid，一个设备一组授权码
-                .authKey(info.key) //授权码中的authKey，一个设备一组授权码
+                .uuid("xxxxxx") //授权码中的uuid，一个设备一组授权码
+                .authKey("xxxxxxx") //授权码中的authKey，一个设备一组授权码
                 .version("1.0.0") //设备 software 版本号,会跟ota版本关联
 //                .enablePreReleaseEnv(true)
                 .ioTCallback(mIotCallback)
@@ -304,66 +300,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 初始化授权模块并检查授权状态
-     */
-    private void initLicenseModule() {
-        TLog.i(TAG, "初始化授权模块...");
-        // 初始化授权烧录模块
-        LicenseProvisionManager.getInstance()
-                .init(this)
-                .enableAutoLaunch(true)  // 启用SD卡自动弹出授权页面
-                .setOnLicenseChangeListener(new LicenseProvisionManager.OnLicenseChangeListener() {
-                    @Override
-                    public void onLicenseGranted(LicenseInfo license) {
-                        TLog.i(TAG, "授权码已授予: uuid=" + license.uuid + ",ioTSDKManager.isInitialized() " + ioTSDKManager.isInitialized());
-                        if (!ioTSDKManager.isInitialized()) {
-                            Toast.makeText(MainActivity.this, "授权成功，正在初始化SDK...", Toast.LENGTH_SHORT).show();
-                            initSDK();
-                        }
-                    }
+    // /**
+    //  * 初始化授权模块并检查授权状态
+    //  */
+    // private void initLicenseModule() {
+    //     TLog.i(TAG, "初始化授权模块...");
+    //     // 初始化授权烧录模块
+    //     LicenseProvisionManager.getInstance()
+    //             .init(this)
+    //             .enableAutoLaunch(true)  // 启用SD卡自动弹出授权页面
+    //             .setOnLicenseChangeListener(new LicenseProvisionManager.OnLicenseChangeListener() {
+    //                 @Override
+    //                 public void onLicenseGranted(LicenseInfo license) {
+    //                     TLog.i(TAG, "授权码已授予: uuid=" + license.uuid + ",ioTSDKManager.isInitialized() " + ioTSDKManager.isInitialized());
+    //                     if (!ioTSDKManager.isInitialized()) {
+    //                         Toast.makeText(MainActivity.this, "授权成功，正在初始化SDK...", Toast.LENGTH_SHORT).show();
+    //                         initSDK();
+    //                     }
+    //                 }
 
-                    @Override
-                    public void onLicenseRevoked() {
-                        TLog.i(TAG, "授权码已回收");
-                        showDialog("授权已回收，设备将无法使用");
-                    }
-                })
-                .start();
+    //                 @Override
+    //                 public void onLicenseRevoked() {
+    //                     TLog.i(TAG, "授权码已回收");
+    //                     showDialog("授权已回收，设备将无法使用");
+    //                 }
+    //             })
+    //             .start();
 
-        // 检查当前是否已有授权
-        LicenseInfo info = LicenseProvisionManager.getInstance().getLicense();
+    //     // 检查当前是否已有授权
+    //     LicenseInfo info = LicenseProvisionManager.getInstance().getLicense();
 
-        if (info != null) {
-            // 已有授权，直接初始化SDK
-            TLog.i(TAG, "检测到已有授权: uuid=" + info.uuid);
-            initSDK();
-            if (LicenseProvisionManager.getInstance().hasExternalSDCardWithLicenseFile()) {
-                showLicenseGuideDialog();
-            }
-        } else {
-            // 无授权，引导用户授权
-            TLog.w(TAG, "未检测到授权码，等待授权...");
-            tvBindStatus.setText("请插入授权SD卡进行授权");
-            showLicenseGuideDialog();
-        }
-    }
+    //     if (info != null) {
+    //         // 已有授权，直接初始化SDK
+    //         TLog.i(TAG, "检测到已有授权: uuid=" + info.uuid);
+    //         initSDK();
+    //         if (LicenseProvisionManager.getInstance().hasExternalSDCardWithLicenseFile()) {
+    //             showLicenseGuideDialog();
+    //         }
+    //     } else {
+    //         // 无授权，引导用户授权
+    //         TLog.w(TAG, "未检测到授权码，等待授权...");
+    //         tvBindStatus.setText("请插入授权SD卡进行授权");
+    //         showLicenseGuideDialog();
+    //     }
+    // }
     
-    /**
-     * 显示授权引导对话框
-     */
-    private void showLicenseGuideDialog() {
-        new android.app.AlertDialog.Builder(this)
-            .setTitle("授权相关")
-            .setMessage("当前设备未授权或者具有授权 SD卡\n\n" +
-                       "需要操作授权码吗\n")
-            .setPositiveButton("进入授权页面", (dialog, which) -> {
-                LicenseProvisionManager.getInstance().showProvisionPage();
-            })
-            .setNegativeButton("稍后", null)
-            .setCancelable(false)
-            .show();
-    }
+    // /**
+    //  * 显示授权引导对话框
+    //  */
+    // private void showLicenseGuideDialog() {
+    //     new android.app.AlertDialog.Builder(this)
+    //         .setTitle("授权相关")
+    //         .setMessage("当前设备未授权或者具有授权 SD卡\n\n" +
+    //                    "需要操作授权码吗\n")
+    //         .setPositiveButton("进入授权页面", (dialog, which) -> {
+    //             LicenseProvisionManager.getInstance().showProvisionPage();
+    //         })
+    //         .setNegativeButton("稍后", null)
+    //         .setCancelable(false)
+    //         .show();
+    // }
 
     private void showDialog(String msg) {
         new android.app.AlertDialog.Builder(this)
