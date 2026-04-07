@@ -70,7 +70,7 @@ dependencies {
 
 
 
-    def sdk_version = "2.2.0.0"
+    def sdk_version = "2.2.2.0"
     // ==================== thingiotsdk（必选）====================
     implementation "com.thingclips.smart:thingiotsdk:$sdk_version"
     implementation 'com.alibaba:fastjson:1.1.67.android'
