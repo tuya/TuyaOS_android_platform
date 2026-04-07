@@ -34,6 +34,8 @@ import com.thingclips.smart.ai.bs.bean.PhotoInfo;
 import com.thingclips.smart.ai.bs.bean.StartEventData;
 import com.thingclips.smart.ai.bs.bean.UploadFinishedEventData;
 import com.thingclips.smart.ai.bs.bean.UploadedEventData;
+import com.thingclips.smart.os.license.LicenseProvisionManager;
+import com.thingclips.smart.os.license.model.LicenseInfo;
 import com.tuya.smartai.demo.ai.AiChatActivity;
 import com.tuya.smartai.demo.utils.LoadingDialog;
 import com.tuya.smartai.demo.utils.QrCodeUtil;
@@ -57,7 +59,11 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+/**
+ * 包含授权烧录系统 对接的方式demo
+ */
+
+public class MainActivity2 extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -106,13 +112,19 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.get_weather).setOnClickListener(this::onClick);
         findViewById(R.id.get_weather_default).setOnClickListener(this::onClick);
 
+        //添加调试代码，添加该代码后，属于内置了授权码，可以不会走授权流程
+//         LicenseProvisionManager.getInstance()
+//                 .init(this).grantLicense("uuidb3d877629c43fe71", "XVCWC2tUf1Xcr21h9KpdEkQ8FERGal4G");
+
+        // 初始化授权模块并检查授权状态
+        initLicenseModule();
+
         initSDK();
 
     }
 
 
-
-    private void printLn(){
+    private void printLn() {
         List<PhotoInfo> photoInfos = ThingFrameOS.getInstance().getPhotoFrame().getAllFileInfos();
         TLog.d(TAG, "已有文件数量: " + photoInfos.size());
         for (PhotoInfo info : photoInfos) {
@@ -216,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (status == IoTSDKManager.STATUS_MQTT_ONLINE) {
                 tvMqttStatus.setText("设备上线");
-                tvMqttStatus.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary));
+                tvMqttStatus.setTextColor(ContextCompat.getColor(MainActivity2.this, R.color.colorPrimary));
                 String deviceId = ioTSDKManager.getDeviceId();
                 if (!hasInitFrame) {
                     FrameZoneConfig config = FrameZoneConfig.builder()
@@ -243,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 if (!TextUtils.isEmpty(ioTSDKManager.getDeviceId())) {
                     tvMqttStatus.setText("设备离线");
-                    tvMqttStatus.setTextColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
+                    tvMqttStatus.setTextColor(ContextCompat.getColor(MainActivity2.this, R.color.colorAccent));
                 }
             }
 
@@ -271,23 +283,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initSDK() {
 
-        String uuid = "xxxxxxxxxx";
-        String authKey = "xxxxxxxxxxxx";
-
-        //授权码来自 tuya，若需要加入生产烧录流程，可以参考 MainActivity2 的代码中生产烧录的用于 以及doc下产测文档
-
-        if (TextUtils.equals(uuid, "xxxxxxxxxx")) {
-            new RuntimeException("请填写uuid和authKey，才能使用SDK");
-
-            uuid2;//todo DELETE 这里是为了编译报错，避免运行
-        }
-
+        LicenseInfo info = LicenseProvisionManager.getInstance().getLicense();
+        TLog.e(TAG, "initSDK license : uuid=" + info.uuid + ", key=" + info.key);
 
         IoTParams params = new IoTParams.Builder()
                 .addMode(IoTParams.Mode.MODE_QR) //配网模式，QR为二维码模式
                 .productId("le2fomtcgvicqawl") //  aqcxhpklvzlblyl3 产品ID，设备对应的产品ID,一类产品 一个产品id，产品id中会定义产品的各种功能和属性
-                .uuid(uuid) //授权码中的uuid，一个设备一组授权码
-                .authKey(authKey) //授权码中的authKey，一个设备一组授权码
+                .uuid(info.uuid) //授权码中的uuid，一个设备一组授权码
+                .authKey(info.key) //授权码中的authKey，一个设备一组授权码
                 .version("1.0.0") //设备 software 版本号,会跟ota版本关联
                 .ioTCallback(mIotCallback)
                 .build();
@@ -301,6 +304,66 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 初始化授权模块并检查授权状态
+     */
+    private void initLicenseModule() {
+        TLog.i(TAG, "初始化授权模块...");
+        // 初始化授权烧录模块
+        LicenseProvisionManager.getInstance()
+                .init(this)
+                .enableAutoLaunch(true)  // 启用SD卡自动弹出授权页面
+                .setOnLicenseChangeListener(new LicenseProvisionManager.OnLicenseChangeListener() {
+                    @Override
+                    public void onLicenseGranted(LicenseInfo license) {
+                        TLog.i(TAG, "授权码已授予: uuid=" + license.uuid + ",ioTSDKManager.isInitialized() " + ioTSDKManager.isInitialized());
+                        if (!ioTSDKManager.isInitialized()) {
+                            Toast.makeText(MainActivity2.this, "授权成功，正在初始化SDK...", Toast.LENGTH_SHORT).show();
+                            initSDK();
+                        }
+                    }
+
+                    @Override
+                    public void onLicenseRevoked() {
+                        TLog.i(TAG, "授权码已回收");
+                        showDialog("授权已回收，设备将无法使用");
+                    }
+                })
+                .start();
+
+        // 检查当前是否已有授权
+        LicenseInfo info = LicenseProvisionManager.getInstance().getLicense();
+
+        if (info != null) {
+            // 已有授权，直接初始化SDK
+            TLog.i(TAG, "检测到已有授权: uuid=" + info.uuid);
+            initSDK();
+            if (LicenseProvisionManager.getInstance().hasExternalSDCardWithLicenseFile()) {
+                showLicenseGuideDialog();
+            }
+        } else {
+            // 无授权，引导用户授权
+            TLog.w(TAG, "未检测到授权码，等待授权...");
+            tvBindStatus.setText("请插入授权SD卡进行授权");
+            showLicenseGuideDialog();
+        }
+    }
+
+    /**
+     * 显示授权引导对话框
+     */
+    private void showLicenseGuideDialog() {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("授权相关")
+                .setMessage("当前设备未授权或者具有授权 SD卡\n\n" +
+                        "需要操作授权码吗\n")
+                .setPositiveButton("进入授权页面", (dialog, which) -> {
+                    LicenseProvisionManager.getInstance().showProvisionPage();
+                })
+                .setNegativeButton("稍后", null)
+                .setCancelable(false)
+                .show();
+    }
 
     private void showDialog(String msg) {
         new android.app.AlertDialog.Builder(this)
@@ -314,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void exitApp() {
-        Context context = MainActivity.this;
+        Context context = MainActivity2.this;
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
 
         if (intent != null) {
@@ -352,6 +415,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 发送表情DP事件
+     *
      * @param mode 表情模式 0-5
      */
     private void sendEmotionDP(String mode) {
@@ -362,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
         valueMap.put("meta", "ay15269934114205cqNm"); // meta 值，存放的是 user id
         valueMap.put("mode", mode); //mode表示的是表情 1:喜爱 2：开心  3：难过
 
-        TLog.e(TAG,"sendEmotionDP value: " + JSONObject.toJSONString(valueMap));
+        TLog.e(TAG, "sendEmotionDP value: " + JSONObject.toJSONString(valueMap));
 
         DPEvent event1 = new DPEvent(2, (byte) DPEvent.Type.PROP_RAW, JSONObject.toJSONString(valueMap).getBytes(), timestamp);
         DPEvent[] events = {event1};
@@ -373,7 +437,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ioTSDKManager.sendDPWithTimeStamp(events);
-        
+
         String[] emotionNames = {"-", "开心", "惊喜", "难过"};
         int modeIndex = Integer.parseInt(mode);
         if (modeIndex >= 0 && modeIndex < emotionNames.length) {
@@ -399,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNeutralButton("恢复出厂设置", (dialog, which) -> {
                     // 恢复出厂设置
-                    new android.app.AlertDialog.Builder(MainActivity.this)
+                    new android.app.AlertDialog.Builder(MainActivity2.this)
                             .setTitle("警告⚠️")
                             .setMessage("恢复出厂设置将清除所有数据，设备无法热重置,需要重启。确定要继续吗？")
                             .setPositiveButton("确定", (confirmDialog, confirmWhich) -> {
@@ -502,15 +566,15 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             dataConsole.append("设备信息(部分): ").append(result).append("\n");
                             tvDataConsole.setText(dataConsole.toString());
-                            Toast.makeText(MainActivity.this, "获取成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "获取成功", Toast.LENGTH_SHORT).show();
                         });
                     }
 
                     @Override
-                    public void onFailure(String errorMessage,String msg) {
+                    public void onFailure(String errorMessage, String msg) {
                         TLog.e(TAG, "fetchDeviceInfo partial failed: " + errorMessage);
                         runOnUiThread(() -> {
-                            Toast.makeText(MainActivity.this, "获取失败: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "获取失败: " + errorMessage, Toast.LENGTH_SHORT).show();
                         });
                     }
                 });
@@ -532,7 +596,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             dataConsole.append("天气信息: ").append(result).append("\n");
                             tvDataConsole.setText(dataConsole.toString());
-                            Toast.makeText(MainActivity.this, "天气获取成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "天气获取成功", Toast.LENGTH_SHORT).show();
                         });
                     }
 
@@ -540,7 +604,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(String errorCode, String errorMessage) {
                         TLog.e(TAG, "getWeather failed: " + errorCode + ", " + errorMessage);
                         runOnUiThread(() -> {
-                            Toast.makeText(MainActivity.this, "天气获取失败: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "天气获取失败: " + errorMessage, Toast.LENGTH_SHORT).show();
                         });
                     }
                 });
@@ -554,12 +618,12 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             StringBuilder weatherText = new StringBuilder("默认天气信息:\n");
                             weatherText.append("原始数据: ").append(weatherInfo.toString()).append("\n");
-                            
+
                             // 显示一些常用字段
                             Integer temp0 = weatherInfo.getTemp(0);
                             Integer humidity0 = weatherInfo.getHumidity(0);
                             String conditionNum0 = weatherInfo.getConditionNum(0);
-                            
+
                             if (temp0 != null) {
                                 weatherText.append("今天温度: ").append(temp0).append("°C\n");
                             }
@@ -569,10 +633,10 @@ public class MainActivity extends AppCompatActivity {
                             if (conditionNum0 != null) {
                                 weatherText.append("今天天气状况: ").append(conditionNum0).append("\n");
                             }
-                            
+
                             dataConsole.append(weatherText.toString()).append("\n");
                             tvDataConsole.setText(dataConsole.toString());
-                            Toast.makeText(MainActivity.this, "默认天气获取成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "默认天气获取成功", Toast.LENGTH_SHORT).show();
                         });
                     }
 
@@ -580,7 +644,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(String errorCode, String errorMessage) {
                         TLog.e(TAG, "getWeatherDefault failed: " + errorCode + ", " + errorMessage);
                         runOnUiThread(() -> {
-                            Toast.makeText(MainActivity.this, "默认天气获取失败: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity2.this, "默认天气获取失败: " + errorMessage, Toast.LENGTH_SHORT).show();
                         });
                     }
                 });
@@ -659,7 +723,7 @@ public class MainActivity extends AppCompatActivity {
         int width = options.outWidth;
         int height = options.outHeight;
 
-        TLog.d(TAG,"--- 图片分辨率 --- ( " + width +" x " + height + " )" );
+        TLog.d(TAG, "--- 图片分辨率 --- ( " + width + " x " + height + " )");
     }
 
     @Override
@@ -803,6 +867,7 @@ public class MainActivity extends AppCompatActivity {
                 .error(R.drawable.ic_launcher_background)
                 .into(downloadImageView);
     }
+
     private void playVideo(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             // 处理路径无效的情况
@@ -843,7 +908,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         videoView.setOnCompletionListener(mp -> {
-             videoView.start();
+            videoView.start();
         });
     }
 
