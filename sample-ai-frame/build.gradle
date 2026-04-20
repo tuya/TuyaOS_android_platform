@@ -12,7 +12,7 @@ android {
 
         ndk {
             abiFilters 'armeabi-v7a'
-            abiFilters 'arm64-v8a'
+//            abiFilters 'arm64-v8a'
         }
 
         packagingOptions {
@@ -20,30 +20,7 @@ android {
             pickFirst 'lib/arm64-v8a/libc++_shared.so'
         }
     }
-    signingConfigs {
-//        debug {
-//            storeFile file('../keystore/platform.jks')
-//            storePassword "${SIGN_STORE_PASSWORD}"
-//            keyAlias "${SIGN_KEY_ALIAS}"
-//            keyPassword "${SIGN_KEY_PASSWORD}"
-//            v2SigningEnabled true
-//        }
-//        debug {
-//            storeFile file("../keystore/chiptripLauncher.jks")
-//            keyAlias "chiptripLauncher"
-//            keyPassword "123456"
-//            storePassword "123456"
-//        }
-//        release {
-//            storeFile file('../keystore/platform.jks')
-//            storePassword "${SIGN_STORE_PASSWORD}"
-//            keyAlias "${SIGN_KEY_ALIAS}"
-//            keyPassword "${SIGN_KEY_PASSWORD}"
-//            v2SigningEnabled true
-//        }
 
-
-    }
 
     buildTypes {
         release {
@@ -67,13 +44,16 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.annotation:annotation:1.3.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
 
+    implementation project(':ai-local-mcp-lib')
 
+    def sdk_version = "2.2.5.0"
 
-    def sdk_version = "2.2.2.0"
     // ==================== thingiotsdk（必选）====================
     implementation "com.thingclips.smart:thingiotsdk:$sdk_version"
     implementation 'com.alibaba:fastjson:1.1.67.android'
+
 
     // ==================== thingiotsdk-aistream（可选）====================
     // 如需 AI 语音/视频流能力，添加以下依赖：
@@ -84,24 +64,23 @@ dependencies {
     // 如需相框业务能力，添加以下依赖：
     implementation "com.thingclips.smart:thingiotsdk-frame:$sdk_version"
     implementation 'com.qcloud.cos:cos-android:5.9.46' //中国区引用-腾讯云
-    implementation 'com.amazonaws:aws-android-sdk-core:2.22.1' //海外引用
-    implementation 'com.amazonaws:aws-android-sdk-s3:2.22.1'//海外引用-亚马逊云
+    implementation 'com.amazonaws:aws-android-sdk-core:2.22.1' //海外引用-亚马逊云
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.22.1'   //海外引用-亚马逊云
+
     implementation 'com.microsoft.azure.android:azure-storage-android:2.0.0'//海外引用-微软云
 
 
     // ==================== thingiotsdk-licenseprovision（可选）====================
     // 如需授权烧录能力，添加以下依赖：
-    implementation 'androidx.security:security-crypto:1.0.0'//授权码存储用到的加密库
-    implementation 'net.zetetic:android-database-sqlcipher:4.5.4'
-    implementation 'androidx.sqlite:sqlite:2.1.0'
-    implementation 'androidx.documentfile:documentfile:1.0.1'
     implementation "com.thingclips.smart:thingiotsdk-licenseprovision:$sdk_version"
+
+    implementation 'androidx.security:security-crypto:1.0.0'
+    implementation 'androidx.documentfile:documentfile:1.0.1'
     implementation('com.github.SUPERCILEX.poi-android:poi:3.17') {
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'com.bea.xml', module: 'jsr173-ri'
         exclude group: 'org.codehaus.woodstox', module: 'stax2-api'
     }
-
 
     //demo 中引用的一些组件，非关键
     def glide_version = "4.16.0"
