@@ -1,5 +1,6 @@
 include ':sample-ai-frame'
 include ':sample-iot-tv'
+include ':ai-local-mcp-lib'
 
 rootProject.name='tuyaopen_android_platform'
 
