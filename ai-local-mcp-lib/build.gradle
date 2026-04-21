@@ -1,13 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'upload'
 
-upInfo {
-    version = '9.9.9-LOCAL'
-    artifactId = "thingsmart-ai-local-mcp-lib"
-    groupId = "com.thingclips.smart"
-    hasPomDepend = false
-}
+
+
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
