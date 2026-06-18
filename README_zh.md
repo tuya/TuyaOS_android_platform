@@ -38,6 +38,7 @@ TuyaOS_android_platform/
 │   └── img/                         # 文档图片资源
 ├── sample-ai-frame/                 # 示例：AI 智能相框
 ├── sample-iot-tv/                   # 示例：IoT 电视控制
+├── sample-iot-ipc/                  # 示例：IoT IPC 摄像头推流
 ├── build.gradle                     # 顶层构建配置
 ├── settings.gradle                  # 模块配置
 └── gradle/                          # Gradle 包装器
@@ -90,6 +91,20 @@ TuyaOS_android_platform/
 | 菜单/确认/返回 | 遥控器按键模拟（需系统权限） | ⚠️ 需系统权限 |
 
 ![](./doc/img/tv_img.jpg)
+
+
+
+### 📹 IoT IPC 摄像头推流 (`sample-iot-ipc`)
+
+一个基于 TuyaOS 的最小 IPC（网络摄像头）示例，仅保留作为摄像头设备对外推实时音视频流所需的最小骨架。流程：SDK 初始化 → 显示二维码 → 等待 App 扫码绑定 → MQTT 上线后初始化 P2P/IPC → App 拉流时启动摄像头推 H.264 / G711U 实时流。
+
+| 功能 | 说明 | 状态 |
+|------|------|------|
+| 设备配网 | 二维码配网，设备激活 | ✅ 就绪 |
+| P2P / IPC 通道 | MQTT 上线后初始化实时视频通道 | ✅ 就绪 |
+| 视频推流 | Camera2 → MediaCodec H.264，经 P2P 推流 | ✅ 就绪 |
+| 音频推流 | 麦克风 PCM16 → G.711 µ-law | ✅ 就绪 |
+| 码率自适应 | 编码器码率随网络负载等级动态调整 | ✅ 就绪 |
 
 ---
 

@@ -38,6 +38,7 @@ TuyaOS_android_platform/
 │   └── img/                         # Documentation images
 ├── sample-ai-frame/                 # Sample: AI Smart Photo Frame
 ├── sample-iot-tv/                   # Sample: IoT TV Control
+├── sample-iot-ipc/                  # Sample: IoT IPC Camera Streaming
 ├── build.gradle                     # Top-level build configuration
 ├── settings.gradle                  # Module configuration
 └── gradle/                          # Gradle wrapper
@@ -90,6 +91,20 @@ A smart TV remote control sample built on TuyaOS:
 | Menu / OK / Back | Remote key simulation (requires system permission) | ⚠️ System Permission |
 
 ![](./doc/img/tv_img.jpg)
+
+
+
+### 📹 IoT IPC Camera Streaming (`sample-iot-ipc`)
+
+A minimal IPC (IP camera) sample built on TuyaOS — the smallest skeleton needed to push a live A/V stream as a camera device. Flow: SDK init → show QR code → wait for app pairing → init P2P/IPC after MQTT goes online → start camera and push H.264 / G.711U stream when the app pulls video.
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| Device Pairing | QR Code pairing and activation | ✅ Ready |
+| P2P / IPC Channel | Init live-video channel after MQTT online | ✅ Ready |
+| Video Streaming | Camera2 → MediaCodec H.264, pushed via P2P | ✅ Ready |
+| Audio Streaming | Mic PCM16 → G.711 µ-law | ✅ Ready |
+| Adaptive Bitrate | Encoder bitrate adjusts to network load level | ✅ Ready |
 
 ---
 
