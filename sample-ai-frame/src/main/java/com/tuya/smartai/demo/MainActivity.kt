@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.thingclips.smart.ai.bs.ThingFrameOS
 import com.thingclips.smart.ai.bs.api.IPhotoFrameMediaUpdateListener
 import com.thingclips.smart.ai.bs.bean.DeleteEventData
+import com.thingclips.smart.ai.bs.bean.FrameTransferMode
 import com.thingclips.smart.ai.bs.bean.FrameZoneConfig
 import com.thingclips.smart.ai.bs.bean.StartEventData
 import com.thingclips.smart.ai.bs.bean.UploadFinishedEventData
@@ -132,9 +133,14 @@ class MainActivity : AppCompatActivity() {
                         .resolution("1024*800")
                         .allowFormats(arrayOf("png", "jpg", "mp4"))
                         .maxFc(3)
+                        .transferMode(FrameTransferMode.DEVICE_SECRET)
                         .maxFs(10485760)
 
-                    ThingFrameOS.getInstance().photoFrame.initFrameZone(config, object : ApiCallback<Void> {
+                    ThingFrameOS.getInstance().photoFrame.initFrameZone(
+                        config,
+                        object : ApiCallback<Void?> {
+
+
                         override fun onSuccess(result: Void?) {
                             hasInitFrame = true
                             initFrameImageUpdateListener()
@@ -622,26 +628,29 @@ class MainActivity : AppCompatActivity() {
         var path = filePath
         val photoInfos = ThingFrameOS.getInstance().photoFrame.allFileInfos
         Log.d(TAG, "已有文件数量: ${photoInfos.size}")
+
         for (info in photoInfos) {
             Log.d(TAG, "realFn: ${info.realFn}, title: ${info.title}, type: ${info.fileType},prefix: ${info.prefix}, centerX: ${info.centerX}, localPath: ${info.localPath}")
         }
 
+        if (photoInfos.isEmpty()) return
+
         var index = 0
         if (fn.isEmpty() && photoInfos.isNotEmpty()) {
-            fn = photoInfos[0].realFn
-            path = photoInfos[0].localPath
+            fn = photoInfos[0].realFn ?: ""
+            path = photoInfos[0].localPath ?: ""
         }
 
         if (next) {
             for (i in photoInfos.indices) {
                 if (fn == photoInfos[i].realFn) {
                     if (i == photoInfos.size - 1) {
-                        fn = photoInfos[0].realFn
-                        path = photoInfos[0].localPath
+                        fn = photoInfos[0].realFn ?: ""
+                        path = photoInfos[0].localPath ?: ""
                     } else {
                         index = i + 1
-                        fn = photoInfos[i + 1].realFn
-                        path = photoInfos[i + 1].localPath
+                        fn = photoInfos[i + 1].realFn ?: ""
+                        path = photoInfos[i + 1].localPath ?: ""
                     }
                     break
                 }
@@ -675,7 +684,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onMediaDeviceDownloaded(event: UploadedEventData, filePath: String) {
                 Log.d(TAG, "onImageDeviceDownloaded() called with: sid = [${event.sid}], fileName = [${event.realFn}], filePath = [$filePath]")
-                chooseNewImage(event.realFn, filePath, false)
+                chooseNewImage(event.realFn?: "", filePath, false)
             }
 
             override fun onMediaAllUploadFinished(event: UploadFinishedEventData) {

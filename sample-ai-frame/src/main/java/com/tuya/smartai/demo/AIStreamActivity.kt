@@ -194,7 +194,7 @@ class AIStreamActivity : AppCompatActivity() {
         deviceId = intent.getStringExtra(EXTRA_DEVICE_ID)
 
         ThingStreamManager.getInstance().enableDebugLog(true)
-        aiStream = ThingAIOS.getInstance().aiStream
+        aiStream = ThingAIOS.getInstance().getAiStream()
         statusTextView = findViewById(R.id.statusTextView)
         connectButton = findViewById(R.id.connectButton)
         disconnectButton = findViewById(R.id.disconnectButton)
@@ -278,7 +278,7 @@ class AIStreamActivity : AppCompatActivity() {
         }
 
         addLog("创建会话2: $deviceId")
-        aiStream.createSession(deviceId, "generate_image", null, object : SessionCallback {
+        aiStream.createSession(deviceId!!, "generate_image", null, object : SessionCallback {
             override fun onSuccess(sessionId: String, sendDataChannels: Map<String, Int>, revDataChannels: Map<String, Int>) {
                 Log.i(TAG, "会话创建成功: $sessionId, sendDataCodes: $sendDataChannels, revDataCodes: $revDataChannels")
                 isGenerateImageSession = true
@@ -325,7 +325,7 @@ class AIStreamActivity : AppCompatActivity() {
             val customAttribute = JSONObject().put("sessionAttributes", sessionAttributes).toString()
             addLog("使用自定义参数: $customAttribute")
 
-            aiStream.createSession(deviceId, "", customAttribute, object : SessionCallback {
+            aiStream.createSession(deviceId!!, "", customAttribute, object : SessionCallback {
                 override fun onSuccess(sessionId: String, sendDataChannels: Map<String, Int>, revDataChannels: Map<String, Int>) {
                     Log.i(TAG, "会话创建成功: $sessionId, sendDataCodes: $sendDataChannels, revDataCodes: $revDataChannels")
                     isGenerateImageSession = false
