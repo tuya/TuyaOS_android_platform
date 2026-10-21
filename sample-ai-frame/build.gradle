@@ -48,7 +48,7 @@ dependencies {
 
     implementation project(':ai-local-mcp-lib')
 
-    def sdk_version = "2.2.5.0"
+    def sdk_version = "2.4.0.0"
 
     // ==================== thingiotsdk（必选）====================
     implementation "com.thingclips.smart:thingiotsdk:$sdk_version"
@@ -69,18 +69,6 @@ dependencies {
 
     implementation 'com.microsoft.azure.android:azure-storage-android:2.0.0'//海外引用-微软云
 
-
-    // ==================== thingiotsdk-licenseprovision（可选）====================
-    // 如需授权烧录能力，添加以下依赖：
-    implementation "com.thingclips.smart:thingiotsdk-licenseprovision:$sdk_version"
-
-    implementation 'androidx.security:security-crypto:1.0.0'
-    implementation 'androidx.documentfile:documentfile:1.0.1'
-    implementation('com.github.SUPERCILEX.poi-android:poi:3.17') {
-        exclude group: 'stax', module: 'stax-api'
-        exclude group: 'com.bea.xml', module: 'jsr173-ri'
-        exclude group: 'org.codehaus.woodstox', module: 'stax2-api'
-    }
 
     //demo 中引用的一些组件，非关键
     def glide_version = "4.16.0"
